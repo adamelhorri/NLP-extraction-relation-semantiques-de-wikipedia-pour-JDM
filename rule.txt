@@ -1,0 +1,4 @@
+NOUN* AUX(être) DET NOUN* => isa
+DET NOUN* AUX DET NOUN* => isa
+DET* DET DET* => isa
+NOUN* PUNCT ADV(généralement) ADJ* => isa
