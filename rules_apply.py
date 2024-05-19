@@ -1,4 +1,5 @@
 from process_text import *
+from create_rule import *
 
 
 def read_semantic_rules_from_file(filename):
@@ -46,7 +47,6 @@ def read_semantic_rules_from_file(filename):
             semantic_rules.append((syntactic_relations_list, semantic_relation))
     
     return semantic_rules
-              
 
 def compare_rules_with_tab(rules, tab):
     def match_rule(rule, tab,relation):
@@ -88,13 +88,23 @@ def compare_rules_with_tab(rules, tab):
         else:
             continue
 
+def split_phrases(tab_token):
+    phrases = []
+    current_phrase = []
+
+    for token in tab_token:
+        if token['id'] == 1:  # Indicates the start of a new phrase
+            if current_phrase:
+                phrases.append(current_phrase)
+                current_phrase = []
+        current_phrase.append(token)
+    
+    if current_phrase:
+        phrases.append(current_phrase)
+    
+    return phrases
+'''
 r=read_semantic_rules_from_file("rule.txt")
-
-
-
-
-
-
 
 text = """
 Les singes sont des mammifères de l'ordre des primates, généralement arboricoles, à la face souvent glabre et caractérisés par un encéphale développé et de longs membres terminés par des doigts. Bien que leur ressemblance avec l'Homme ait toujours frappé les esprits, la science a mis de nombreux siècles à prouver le lien étroit qui existe entre ceux-ci et l'espèce humaine.
@@ -108,5 +118,9 @@ for token in tokens_info :
   tab.append([token['upos'],token['lemma'],''])
 
 compare_rules_with_tab(r, tab)
+a=split_phrases(tokens_info)
+for i in a:
+    print(i)
 
+'''
 

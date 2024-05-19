@@ -40,14 +40,5 @@ def scrape_wikipedia_category(category_url: str, val: int) -> List[str]:
         summary = get_wikipedia_summary(link, val)
         summaries.append(summary)
     return summaries
-texte=""
-# Exemple d'utilisation :
-category_url = "https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Chat"
-summaries = scrape_wikipedia_category(category_url, 2)
 
-for summary in summaries:
-    print("*************************************************")
-    print(summary)
-    print("*************************************************")
-   
-txt=texte
+
