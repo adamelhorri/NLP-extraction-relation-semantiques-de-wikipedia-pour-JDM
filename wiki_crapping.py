@@ -33,12 +33,17 @@ def get_wikipedia_article_links(category_url: str) -> List[str]:
     return links
 
 
-def scrape_wikipedia_category(category_url: str, val: int) -> List[str]:
+def scrape_wikipedia_category(category_url: str, val: int,n: int) -> List[str]:
     article_links = get_wikipedia_article_links(category_url)
     summaries = []
     for link in article_links:
         summary = get_wikipedia_summary(link, val)
         summaries.append(summary)
+        summaries=summaries[:n]
     return summaries
-
-
+'''
+a=scrape_wikipedia_category("https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Chat",3,20)
+for i in a:
+    print(i)
+    print("************************************")
+'''

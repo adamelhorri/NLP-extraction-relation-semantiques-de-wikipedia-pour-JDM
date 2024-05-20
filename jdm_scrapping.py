@@ -17,6 +17,7 @@ def check_relation(mot1, relation, mot2):
 mot1 = "chien"
 relation = "r_isa"
 mot2 = "animal"
-
+'''
 result = check_relation(mot1, relation, mot2)
 print(result)
+'''
