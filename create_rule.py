@@ -45,7 +45,7 @@ def create_rule(tokens, relation):
                                     rule += " "
                             rule += f" => {relation}-1"
                             rules.append(rule)
-                            relations.append(f"{token2['lemma']} {relation} {token['lemma']}")
+                            relations.append(f"{token['lemma']} {relation} {token2['lemma']}")
                             # print(f"**Rule added: {rule.strip()}")
                             rule = ""
     

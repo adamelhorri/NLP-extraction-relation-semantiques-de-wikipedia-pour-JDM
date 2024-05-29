@@ -37,11 +37,11 @@ def process_category(category_url,rel, max_summaries=3):
                     if rule in existing_rules:
                         rule_id, score = existing_rules[rule]
                         existing_rules[rule] = (rule_id, score +1)
-                        update_rule_in_file("temp_rule.txt", rule_id, rule, score+1)
+                        update_rule_in_file(f"{rel}_rule.txt", rule_id, rule, score+1)
                     else:
                         rule_id = len(existing_rules) + 1
                         existing_rules[rule] = (rule_id, 1)
-                        write_new_rule_to_file("temp_rule.txt", rule_id, rule, 1)
+                        write_new_rule_to_file(f"{rel}_rule.txt", rule_id, rule, 1)
                 print("created rules for token phrase and added relations to rel_temp ", count_t)
                 with open("temp_rel.txt", "a", encoding="utf-8") as file:
                     for r in relations_l:
@@ -75,9 +75,9 @@ def test_process_category():
     """
     Test function for process_category.
     """
-    category_url = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Souris"]
-    max_summaries = 3
-    rules_c=["r_has_part"]
+    category_url = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Fourmi","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Souris"]
+    max_summaries = 4
+    rules_c=["r_lieu"]
     for c in category_url:
      for r in rules_c:
         rules, relations = process_category(c,r, max_summaries)
@@ -85,4 +85,4 @@ def test_process_category():
     print("Number of relations generated:", len(relations))
 
 # Test the function
-#test_process_category()
+test_process_category()

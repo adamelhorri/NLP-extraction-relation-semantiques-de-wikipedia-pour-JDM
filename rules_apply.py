@@ -108,7 +108,7 @@ def split_phrases(tab_token):
 h_text = []
 cat_table=["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Chien","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Ursidae","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Requin_(nom_vernaculaire)"]
 for link in cat_table:
-    text = scrape_wikipedia_category(link, 5, 30)
+    text = scrape_wikipedia_category(link, 2, 30)
     print("scrapped wiki")
     print(text)
     for t in text:
@@ -118,8 +118,8 @@ for link in cat_table:
     rela = []
     for i, ta in enumerate(h_text):
         print("*analyzing sentence n°", i, "out of", length)
-
-        r = read_semantic_rules_from_file("temp_rule.txt")
+#***************************** changer nom du fichier ICI
+        r = read_semantic_rules_from_file("r_lieu_rule.txt")
 
         tokens_info = process_text(ta)
         print("**processed sentence n°", i, "out of", length)
