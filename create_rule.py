@@ -12,7 +12,7 @@ def create_rule(tokens, relation):
         for token2 in tokens:
             # print(f"**Comparing with token: {token2}")
             if token['upos'] == 'NOUN' or token['upos'] == 'PROPN' or token['upos']=='ADJ' or token['upos']=='VERB':
-                if (token2['upos'] == 'NOUN' or token2['upos'] == 'PROPN' or token['upos']=='ADJ' or token['upos']=='VERB') and token['text'] != token2['text'] and abs(token['id'] - token2['id']) < 8 and abs(token['id'] - token2['id'])>1:
+                if (token2['upos'] == 'NOUN' or token2['upos'] == 'PROPN' or token['upos']=='ADJ' or token['upos']=='VERB' ) and token['text'] != token2['text'] and abs(token['id'] - token2['id']) < 8 and abs(token['id'] - token2['id'])>1:
                     # print(f"**Tokens {token['text']} and {token2['text']} are nouns/proper nouns and within distance")
                     if token2['id'] > token['id']:
                         # print(f"**Token2 {token2['text']} follows token {token['text']}")
@@ -22,7 +22,7 @@ def create_rule(tokens, relation):
                                 if t['id'] >= (token['id'] - 1) and t['id'] <= token2['id']:
                                     # print(f"**Building rule segment with token: {t}")
                                     rule += t['upos']
-                                    if (t['upos'] == 'AUX' or t['upos'] == 'PUNCT' or t['upos'] == "ADP" or t['upos'] == 'VERB' or t['upos'] == 'CCONJ') and t['lemma']!=token['lemma'] and t['lemma']!=token2['lemma']:
+                                    if (t['upos'] == 'AUX' or t['upos'] == 'PUNCT' or t['upos'] == "ADP" or token['upos']=='DET' or t['upos'] == 'VERB' or t['upos'] == 'CCONJ') and t['lemma']!=token['lemma'] and t['lemma']!=token2['lemma']:
                                         rule += f"({t['lemma']})"
                                     if (t['lemma'] == token['lemma'] and t['upos'] == token['upos']) or (t['lemma'] == token2['lemma'] and t['upos'] == token2['upos']) :
                                         rule += "*"
@@ -38,7 +38,7 @@ def create_rule(tokens, relation):
                                 if t['id'] >= (token['id'] - 1) and t['id'] <= token2['id']:
                                     # print(f"**Building rule segment with token: {t}")
                                     rule += t['upos']
-                                    if (t['upos'] == 'AUX' or t['upos'] == 'PUNCT' or t['upos'] == "ADP" or t['upos'] == 'VERB' or t['upos'] == 'CCONJ' ) and t['lemma']!=token['lemma'] and t['lemma']!=token2['lemma']:
+                                    if (t['upos'] == 'AUX' or t['upos'] == 'PUNCT' or t['upos'] == "ADP" or token['upos']=='DET' or t['upos'] == 'VERB' or t['upos'] == 'CCONJ' ) and t['lemma']!=token['lemma'] and t['lemma']!=token2['lemma']:
                                         rule += f"({t['lemma']})"
                                     if (t['lemma'] == token['lemma'] and t['upos'] == token['upos']) or (t['lemma'] == token2['lemma'] and t['upos'] == token2['upos']) :
                                         rule += "*"

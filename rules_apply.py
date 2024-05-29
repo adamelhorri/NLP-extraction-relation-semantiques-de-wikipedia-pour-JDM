@@ -104,51 +104,89 @@ def split_phrases(tab_token):
         phrases.append(current_phrase)
     
     return phrases
-h_text=[]
-text=scrape_wikipedia_category("https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Crocodilien",7,30)
-print("scrapped wiki")
-print(text)
-for t in text:
-    h_text+=t.split('.')
-length=len(h_text)
-print("splitting succesful size of tab :",length)
-rela=[]
-for i,ta in enumerate(h_text):
-    print("*analysing sentence n° ",i," out of ",length)
 
-    r=read_semantic_rules_from_file("temp_rule.txt")
+h_text = []
+cat_table=["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Chien","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Ursidae","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Requin_(nom_vernaculaire)"]
+for link in cat_table:
+    text = scrape_wikipedia_category(link, 5, 30)
+    print("scrapped wiki")
+    print(text)
+    for t in text:
+        h_text += t.split('.')
+    length = len(h_text)
+    print("splitting successful, size of tab:", length)
+    rela = []
+    for i, ta in enumerate(h_text):
+        print("*analyzing sentence n°", i, "out of", length)
 
-    tokens_info = process_text(ta)
-    print("**processed sentence n° ",i," out of ",length)
+        r = read_semantic_rules_from_file("temp_rule.txt")
 
-    tab=[]
-    for token in tokens_info :
-        tab.append([token['upos'],token['lemma'],''])
-    print("**comparing rules for s n° ",i)
-    relations_nm=compare_rules_with_tab(r, tab)
-    for reli in relations_nm:
-        rela.append(reli)
-    print("comparing done !!! removing repetiton")
-# Initialisation du dictionnaire pour stocker les occurrences de chaque relation
-relation_dict = {}
+        tokens_info = process_text(ta)
+        print("**processed sentence n°", i, "out of", length)
 
-# Parcourir les résultats initiaux et fusionner les occurrences
-for a in rela:
-    relation = a[0]
-    count = int(a[1])
-    if relation in relation_dict:
-        relation_dict[relation] += count
-    else:
-        relation_dict[relation] = count
-tabf=[]
-# Afficher les résultats fusionnés
-for (relation, count) in relation_dict.items():
-    tabf.append([relation, count])
-print("sorting tab !!!")
-tabf.sort(key=lambda x: int(x[1]), reverse=True)
-with open('relss.txt', 'a',encoding="utf-8") as file:
-    # Parcourir le tableau et écrire chaque élément dans le fichier
-    for a in tabf:
-        file.write(str(a) + '\n')
+        tab = []
+        for token in tokens_info:
+            tab.append([token['upos'], token['lemma'], ''])
+        print("**comparing rules for s n°", i)
+        relations_nm = compare_rules_with_tab(r, tab)
+        for reli in relations_nm:
+            rela.append(reli)
+        print("comparing done !!! removing repetition")
 
+    # Initialisation du dictionnaire pour stocker les occurrences de chaque relation
+    relation_dict = {}
 
+    # Parcourir les résultats initiaux et fusionner les occurrences
+    for a in rela:
+        relation = a[0]
+        count = int(a[1])
+        if relation in relation_dict:
+            relation_dict[relation] += count
+        else:
+            relation_dict[relation] = count
+
+    tabf = []
+    # Afficher les résultats fusionnés
+    for (relation, count) in relation_dict.items():
+        tabf.append([relation, count])
+    print("sorting tab !!!")
+    tabf.sort(key=lambda x: int(x[1]), reverse=True)
+
+    # Lire le fichier 'relss.txt' et fusionner les occurrences existantes
+    existing_relation_dict = {}
+    try:
+        with open('relss.txt', 'r', encoding="utf-8") as file:
+            lines = file.readlines()
+            for line in lines:
+                line = line.strip()
+                # Vérifier si la ligne est correctement formatée
+                if line.startswith('[') and line.endswith(']'):
+                    line = line[1:-1].replace("'", "")
+                    parts = line.split(', ')
+                    if len(parts) == 2:
+                        relation, count = parts
+                        count = int(count)
+                        if relation in existing_relation_dict:
+                            existing_relation_dict[relation] += count
+                        else:
+                            existing_relation_dict[relation] = count
+    except FileNotFoundError:
+        print("relss.txt not found, creating a new one.")
+
+    # Fusionner les nouvelles relations avec les existantes
+    for relation, count in relation_dict.items():
+        if relation in existing_relation_dict:
+            existing_relation_dict[relation] += count
+        else:
+            existing_relation_dict[relation] = count
+
+    # Convertir le dictionnaire fusionné en une liste triée
+    final_tabf = [[relation, count] for relation, count in existing_relation_dict.items()]
+    final_tabf.sort(key=lambda x: x[1], reverse=True)
+
+    # Écrire les résultats fusionnés et triés dans le fichier 'relss.txt'
+    with open('relss.txt', 'w', encoding="utf-8") as file:
+        for item in final_tabf:
+            file.write(str(item) + '\n')
+
+    print("Fusion des occurrences terminée et fichier mis à jour.")

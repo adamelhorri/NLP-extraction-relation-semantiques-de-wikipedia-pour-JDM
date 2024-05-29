@@ -37,7 +37,7 @@ def process_category(category_url,rel, max_summaries=3):
                     if rule in existing_rules:
                         rule_id, score = existing_rules[rule]
                         existing_rules[rule] = (rule_id, score +1)
-                        update_rule_in_file("temp_rule.txt", rule_id, rule, score+2)
+                        update_rule_in_file("temp_rule.txt", rule_id, rule, score+1)
                     else:
                         rule_id = len(existing_rules) + 1
                         existing_rules[rule] = (rule_id, 1)
@@ -71,43 +71,18 @@ def write_new_rule_to_file(filename, rule_id, rule, score):
     with open(filename, "a", encoding="utf-8") as file:
         file.write(f"{rule_id};{rule};{score}\n")
 
-import threading
-
-def test_process_category(rules_c):
+def test_process_category():
     """
     Test function for process_category.
     """
-    category_url = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Crocodilien","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Arbre"]
+    category_url = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Souris"]
     max_summaries = 3
-   
-
-    # A function to process a category URL with a specific rule and print results
-    def process_and_print(c, r):
-        rules, relations = process_category(c, r, max_summaries)
-        print(f"Rule: {r}")
-        print("Number of rules generated:", len(rules))
-        print("Number of relations generated:", len(relations))
-    
-    threads = []
-    
+    rules_c=["r_has_part"]
     for c in category_url:
-        for r in rules_c:
-            thread = threading.Thread(target=process_and_print, args=(c, r))
-            threads.append(thread)
-            thread.start()
-    
-    # Wait for all threads to complete
-    for thread in threads:
-        thread.join()
+     for r in rules_c:
+        rules, relations = process_category(c,r, max_summaries)
+    print("Number of rules generated:", len(rules))
+    print("Number of relations generated:", len(relations))
 
 # Test the function
-rules_c = ["r_isa"]
-rules_c2 = ["r_has_part"]
-rules_c3=["r_lieu"]
-rules_c4=["r_patient"]
-#test_process_category(rules_c)
-#test_process_category(rules_c2)
-#test_process_category(rules_c3)
-test_process_category(rules_c4)
-
-
+#test_process_category()
