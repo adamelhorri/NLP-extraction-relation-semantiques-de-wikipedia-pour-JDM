@@ -1,0 +1,16 @@
+1;PUNCT(«) NOUN* PUNCT(») PUNCT(() NOUN*  => r_isa inverse ;20
+2;DET NOUN* PUNCT(«) NOUN PUNCT(») PUNCT(() NOUN*  => r_isa inverse ;20
+3;DET ADJ* NOUN*  => r_isa inverse ;8
+174;DET NOUN* ADP(de) NOUN*  => r_has_part inverse ;10
+174;DET NOUN* ADP(de) NOUN*  => r_has_part inverse ;3
+174;DET NOUN* ADP(de) NOUN*  => r_associated inverse ;1
+144;NOUN* ADJ ADP(de) DET NOUN*  => r_carac inverse ;1
+127;DET NOUN* ADP(de) DET NOUN*  => r_carac ;1
+89;NOUN ADJ* ADP(de) DET NOUN*  => r_carac ;1
+86;DET NOUN* ADP(de) DET NOUN*  => r_carac inverse ;1
+
+
+
+
+
+

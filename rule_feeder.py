@@ -3,7 +3,7 @@ from wiki_crapping import get_wikipedia_summary, get_wikipedia_article_links, sc
 from rules_apply import read_semantic_rules_from_file, compare_rules_with_tab, split_phrases
 from process_text import process_text
 
-def process_category(category_url, max_summaries=3):
+def process_category(category_url,rel, max_summaries=3):
     """
     Process a Wikipedia category by scraping summaries and generating rules.
     """
@@ -30,18 +30,18 @@ def process_category(category_url, max_summaries=3):
 
             for token_phrase in token_phrases:
              
-                rules_l, relations_l = create_rule(token_phrase, "r_carac")
+                rules_l, relations_l = create_rule(token_phrase, rel)
                 
                 
                 for rule in rules_l:
                     if rule in existing_rules:
                         rule_id, score = existing_rules[rule]
                         existing_rules[rule] = (rule_id, score +1)
-                        update_rule_in_file("temp_rule.txt", rule_id, rule, score + 10)
+                        update_rule_in_file("temp_rule.txt", rule_id, rule, score+2)
                     else:
                         rule_id = len(existing_rules) + 1
                         existing_rules[rule] = (rule_id, 1)
-                        write_new_rule_to_file("temp_rule.txt", rule_id, rule, rule.count(" "))
+                        write_new_rule_to_file("temp_rule.txt", rule_id, rule, 1)
                 print("created rules for token phrase and added relations to rel_temp ", count_t)
                 with open("temp_rel.txt", "a", encoding="utf-8") as file:
                     for r in relations_l:
@@ -71,16 +71,43 @@ def write_new_rule_to_file(filename, rule_id, rule, score):
     with open(filename, "a", encoding="utf-8") as file:
         file.write(f"{rule_id};{rule};{score}\n")
 
-def test_process_category():
+import threading
+
+def test_process_category(rules_c):
     """
     Test function for process_category.
     """
-    category_url = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Rongeur","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Felidae","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Oiseau"]
+    category_url = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Crocodilien","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Arbre"]
     max_summaries = 3
+   
+
+    # A function to process a category URL with a specific rule and print results
+    def process_and_print(c, r):
+        rules, relations = process_category(c, r, max_summaries)
+        print(f"Rule: {r}")
+        print("Number of rules generated:", len(rules))
+        print("Number of relations generated:", len(relations))
+    
+    threads = []
+    
     for c in category_url:
-        rules, relations = process_category(c, max_summaries)
-    print("Number of rules generated:", len(rules))
-    print("Number of relations generated:", len(relations))
+        for r in rules_c:
+            thread = threading.Thread(target=process_and_print, args=(c, r))
+            threads.append(thread)
+            thread.start()
+    
+    # Wait for all threads to complete
+    for thread in threads:
+        thread.join()
 
 # Test the function
-test_process_category()
+rules_c = ["r_isa"]
+rules_c2 = ["r_has_part"]
+rules_c3=["r_lieu"]
+rules_c4=["r_patient"]
+#test_process_category(rules_c)
+#test_process_category(rules_c2)
+#test_process_category(rules_c3)
+test_process_category(rules_c4)
+
+

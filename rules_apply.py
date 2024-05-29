@@ -55,6 +55,7 @@ def compare_rules_with_tab(rules, tab):
         consecutive_matches = 0
         score_index=0
         savedWord=''
+
      
         c=0
         while rule_index < len(rule) and tab_index < len(tab):
@@ -78,7 +79,7 @@ def compare_rules_with_tab(rules, tab):
 
             if(consecutive_matches==len(rule)):
               #  print(savedWord,relation,tab_lemma,"score:",score,"rel id:",id )
-                relations.append([savedWord+" "+relation+tab_lemma,score,id])
+                relations.append([tab_lemma+" "+relation+" "+savedWord,int(score)])
         return consecutive_matches == len(rule)
 
     for r in rules:
@@ -103,44 +104,51 @@ def split_phrases(tab_token):
         phrases.append(current_phrase)
     
     return phrases
-def merge_table(table):
-    merged_table = []
-
-    # Merge similar elements while summing up the second and third columns
-    for row in table:
-        merged = False
-        for merged_row in merged_table:
-            if merged_row[0] == row[0]:
-                merged_row[1] = str(int(merged_row[1]) + int(row[1]))
-                merged_row[2] = str(int(merged_row[2]) + int(row[2]))
-                merged = True
-                break
-        if not merged:
-            merged_table.append(row.copy())
-
-    # Sort the merged list by the sum of the third column in descending order
-    merged_table.sort(key=lambda x: int(x[2]), reverse=True)
-
-    return merged_table
-text = get_wikipedia_summary("https://fr.wikipedia.org/wiki/Felidae",20)
-h_text=text.split('.')
+h_text=[]
+text=scrape_wikipedia_category("https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Crocodilien",7,30)
+print("scrapped wiki")
+print(text)
+for t in text:
+    h_text+=t.split('.')
+length=len(h_text)
+print("splitting succesful size of tab :",length)
 rela=[]
-for t in h_text:
+for i,ta in enumerate(h_text):
+    print("*analysing sentence n° ",i," out of ",length)
+
     r=read_semantic_rules_from_file("temp_rule.txt")
 
-    tokens_info = process_text(t)
+    tokens_info = process_text(ta)
+    print("**processed sentence n° ",i," out of ",length)
+
     tab=[]
     for token in tokens_info :
         tab.append([token['upos'],token['lemma'],''])
-
+    print("**comparing rules for s n° ",i)
     relations_nm=compare_rules_with_tab(r, tab)
     for reli in relations_nm:
         rela.append(reli)
-rela=merge_table(rela)
-rela.sort(key=lambda x: int(x[2]), reverse=True)
-for a in rela:
-    print(a)
-    
+    print("comparing done !!! removing repetiton")
+# Initialisation du dictionnaire pour stocker les occurrences de chaque relation
+relation_dict = {}
 
+# Parcourir les résultats initiaux et fusionner les occurrences
+for a in rela:
+    relation = a[0]
+    count = int(a[1])
+    if relation in relation_dict:
+        relation_dict[relation] += count
+    else:
+        relation_dict[relation] = count
+tabf=[]
+# Afficher les résultats fusionnés
+for (relation, count) in relation_dict.items():
+    tabf.append([relation, count])
+print("sorting tab !!!")
+tabf.sort(key=lambda x: int(x[1]), reverse=True)
+with open('relss.txt', 'a',encoding="utf-8") as file:
+    # Parcourir le tableau et écrire chaque élément dans le fichier
+    for a in tabf:
+        file.write(str(a) + '\n')
 
 
