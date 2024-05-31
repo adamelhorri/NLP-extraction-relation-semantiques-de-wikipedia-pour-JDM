@@ -53,7 +53,7 @@ def scrape_wikipedia_category(category_url: str, val: int,n: int) -> List[str]:
         summaries=summaries[:n]
     return summaries
 '''
-a=scrape_wikipedia_category("https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Chat",3,20)
+a=scrape_wikipedia_category(["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Chat"],3,20)
 for i in a:
     print(i)
     print("************************************")

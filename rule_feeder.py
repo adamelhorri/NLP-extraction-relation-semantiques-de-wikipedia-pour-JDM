@@ -44,7 +44,7 @@ def process_category(category_url,rel,threadd, max_summaries=3):
                         existing_rules[rule] = (rule_id, 1)
                         write_new_rule_to_file(f"rules/{rel}_rule.txt", rule_id, rule, 1)
                 print(f"created rules for token phrase and added relations to {rel}_rule  thread :{threadd}", count_t)
-                with open(f"relations/{rel}.txt", "a", encoding="utf-8") as file:
+                with open(f"relationsRezo/{rel}.txt", "a", encoding="utf-8") as file:
                     for r in relations_l:
                         file.write(r + "\n")
                 
@@ -77,16 +77,16 @@ def write_new_rule_to_file(filename, rule_id, rule, score):
         print(f"Une erreur s'est produite : {e}")
 
 
-def test_process_category():
+def test_process_category(rel_c,rel_d):
     """
     Test function for process_category.
     """
     #tu es libre de rajouter de nouvelles categories si t'en a finis avec celle là (reste dans le domaine de animaux et opte pour de caategorie comptant plus de pages wiki que de sous categories)
-    category_urls = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Canidae","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Oiseau","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Equidae","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Arachnide","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Fourmi", "https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Souris"]
+    category_urls = ["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Canidae","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Oiseau"]
+    catu=["https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Equidae","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Arachnide","https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Fourmi", "https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Souris"]
     max_summaries = 3
     #ici changer les relations d'entrainement je propose : 
-    rel_c = "r_carac"
-    rel_d = "r_syn"
+
     
     def process_category_with_rules(category_urls,threadd, rules_c, max_summaries):
         
@@ -95,7 +95,7 @@ def test_process_category():
 
     #tu peux rajouter 2 autres threads si t'as un quad core ( moi j'ai que deux non virtuels)
     thread1 = threading.Thread(target=process_category_with_rules, args=(category_urls,"1", rel_c, max_summaries))
-    thread2 = threading.Thread(target=process_category_with_rules, args=(category_urls,"2", rel_d, max_summaries))
+    thread2 = threading.Thread(target=process_category_with_rules, args=(catu,"2", rel_d, max_summaries))
 
     # Start the threads
     thread1.start()
@@ -106,9 +106,12 @@ def test_process_category():
     thread2.join()
 
     print("Both threads have finished their execution.")
+rel_c = "r_has_part"
+rel_d = "r_has_part"
 
-test_process_category()
+test_process_category(rel_c,rel_d)
+rel_c = "r_has_part"
+rel_d = "r_anto"
+test_process_category(rel_c,rel_d)
 
 
-# Test the function
-test_process_category()
